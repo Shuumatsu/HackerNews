@@ -8,7 +8,7 @@
   <title>Hacker News</title>
   <script>
     'use strict';
-    'serviceWorker' in navigator && navigator.serviceWorker.register('/service-worker.js').then(function (reg) {
+    'serviceWorker' in navigator && navigator.serviceWorker.register('./service-worker.js').then(function (reg) {
       return console.log('Registration succeeded. Scope is ' + reg.scope);
     }).catch(function (err) {
       return console.log('Registration failed with ' + err);
