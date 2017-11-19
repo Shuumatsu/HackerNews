@@ -1,14 +1,24 @@
 import React, { PureComponent } from 'react'
-import { List, InfiniteLoader, WindowScroller } from 'react-virtualized'
+import { List, InfiniteLoader, WindowScroller, AutoSizer } from 'react-virtualized'
 import { autobind } from 'core-decorators'
-import { Container, Item, Tombstone } from './TabContainer.styled'
+import PropTypes from 'prop-types'
+import { Container, Tombstone, PageLoading } from './TabContainer.styled'
+import Item from './Item'
 import { fetchAllIdsByType, fetchItems } from '../firebase'
 
 @autobind
 export default class extends PureComponent {
 
+    static contextTypes = {
+        loadingManager: PropTypes.func
+    }
+
+    get loadingManager() {
+        return this.context.loadingManager
+    }
+
     state = {
-        allItemsIds: [],
+        allItemsIds: null,
         fetchAllItemsIdsStatus: 'pending',
         itemEntities: [],
     }
@@ -17,7 +27,7 @@ export default class extends PureComponent {
         const allItemsIds = this.state.allItemsIds
         const idsInThisRange = allItemsIds.slice(startIndex, stopIndex)
         const entities = await fetchItems(idsInThisRange)
-        this.setState(prev => ({
+        this.mounted && this.setState(prev => ({
             itemEntities: [...prev.itemEntities, ...entities]
         }))
     }
@@ -33,33 +43,38 @@ export default class extends PureComponent {
 
         if (entity)
             return (
-                <Item key={key} style={{ ...style }}>
-                    {JSON.stringify(entity).slice(0, 140)}
-                </Item>
+                <div key={key} style={{ ...style }} >
+                    <Item item={entity} />
+                </div>
             )
 
         return <Tombstone key={key} style={{ ...style }} />
     }
 
     async componentDidMount() {
+        this.mounted = true
         const { activeTab } = this.props
+        this.loadingManager(true)
         try {
-            this.setState({ fetchAllItemsIdsStatus: 'pending' })
             const allItemsIds = await fetchAllIdsByType(activeTab)
-            this.setState({ allItemsIds, fetchAllItemsIdsStatus: 'done' })
+            this.mounted && this.setState({ allItemsIds })
         } catch (err) {
-            this.setState({ fetchAllItemsIdsStatus: 'failed' })
             console.log(err)
+        } finally {
+            this.loadingManager(false)
         }
     }
 
+    componentWillUnmount() {
+        this.mounted = false
+    }
+
     render() {
-        const activeTab = this.props.activeTab
-        const { allItemsIds, fetchAllItemsIdsStatus } = this.state
+        const { allItemsIds } = this.state
         const { isRowLoaded, loadMoreRows, rowRenderer } = this
 
-        if (fetchAllItemsIdsStatus !== 'done')
-            return <div>Loading...</div>
+        if (!allItemsIds)
+            return null
 
         return (
             <Container>
@@ -69,19 +84,25 @@ export default class extends PureComponent {
                     rowCount={allItemsIds.length}>
                     {({ onRowsRendered, registerChild }) => (
                         <WindowScroller>
-                            {({ height, width, isScrolling, onChildScroll, scrollTop }) => (
-                                <List
-                                    style={{ outline: 'none' }}
-                                    ref={registerChild}
-                                    height={height}
-                                    width={960}
-                                    rowCount={allItemsIds.length}
-                                    onScroll={onChildScroll}
-                                    scrollTop={scrollTop}
-                                    rowHeight={400}
-                                    rowRenderer={rowRenderer}
-                                    onRowsRendered={onRowsRendered}
-                                />
+                            {({ height, isScrolling, onChildScroll, scrollTop }) => (
+                                <AutoSizer disableHeight>
+                                    {({ width }) => (
+                                        <List
+                                            style={{ outline: 'none' }}
+                                            ref={registerChild}
+                                            autoHeight
+                                            height={height}
+                                            width={width}
+                                            isScrolling={isScrolling}
+                                            onScroll={onChildScroll}
+                                            scrollTop={scrollTop}
+                                            rowCount={allItemsIds.length}
+                                            rowHeight={240}
+                                            rowRenderer={rowRenderer}
+                                            onRowsRendered={onRowsRendered}
+                                        />
+                                    )}
+                                </AutoSizer>
                             )}
                         </WindowScroller>
                     )}

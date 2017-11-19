@@ -3,7 +3,8 @@ import { withRouter } from 'react-router-dom'
 import { Header, NavTabs, NavTab } from './Header.styled'
 import { autobind } from 'core-decorators'
 
-const tabs = ['new', 'top', 'ask', 'show', 'best']
+
+const tabs = ['new', 'top', 'ask', 'show', 'best', 'job']
 
 @withRouter
 export default class extends PureComponent {
