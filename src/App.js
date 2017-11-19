@@ -10,10 +10,9 @@ export default () => (
     <BrowserRouter key='content'>
         <Route path='/:activeTab' render={({ match, location }) => {
             const { activeTab } = match.params
-            const page = new URLSearchParams(location.search).get('page') || 1
             return [
-                <Header key='header' />,
-                <Container key={activeTab} activeTab={activeTab} page={page} />
+                <Header key='header' activeTab={activeTab} />,
+                <Container key={activeTab} activeTab={activeTab} />
             ]
         }}>
         </Route>
