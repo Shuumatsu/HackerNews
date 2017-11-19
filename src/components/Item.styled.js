@@ -25,7 +25,10 @@ export const Extra = styled.div`
 `
 
 export const Metas = styled.div`
-    margin: 1rem 0;
+    margin-top: 1rem;
+    margin-left: -.5rem;
+    display: flex;
+    justify-content: left;
 `
 
 export const ItemTime = styled.div`

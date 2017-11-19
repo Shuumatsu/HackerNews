@@ -60,7 +60,7 @@ export default class extends PureComponent {
             <Card
                 key={key}
                 title={title}
-                style={{ margin: '16px' }}>
+                style={{ marginBottom: '16px' }}>
                 {url && <ItemLink href={url}>{url}</ItemLink>}
                 <p >{text}</p>
                 <Metas>
@@ -81,7 +81,7 @@ export default class extends PureComponent {
         return this.state.comments.map((comment, index) => {
             return (
                 <Card
-                    style={{ margin: '8px 16px' }}
+                    style={{ marginBottom: '8px' }}
                     key={index}>
                     <p dangerouslySetInnerHTML={{ __html: comment.text }} />
                     <Metas>
@@ -96,7 +96,7 @@ export default class extends PureComponent {
     render() {
         if (!this.state.post)
             return (
-                <Card loading style={{ margin: '16px' }} />
+                <Card loading style={{ marginBottom: '16px' }} />
             )
 
         return [
