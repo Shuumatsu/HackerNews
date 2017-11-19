@@ -1,3 +1,3 @@
 HackerNews webapp 
 
-[Live Demo](https://Shuumats.github.io/HackerNews)
+[Live Demo](https://Shuumatsu.github.io/HackerNews)

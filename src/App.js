@@ -34,7 +34,7 @@ export default class extends PureComponent {
         const loading = this.state.loading
 
         return [
-            <BrowserRouter key='content'>
+            <BrowserRouter key='content' basename={process.env.PUBLIC_URL}>
                 <Switch>
                     <Route path='/item/:id' render={({ match, location }) => {
                         const { id } = match.params
