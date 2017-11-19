@@ -1,15 +1,14 @@
 import React, { PureComponent } from 'react'
 import { withRouter } from 'react-router-dom'
-import { Header, NavTabs, NavTab } from './Header.styled'
+import { Header, NavTabs, NavTab, BackButton } from './Header.styled'
 import { autobind } from 'core-decorators'
-
 
 const tabs = ['new', 'top', 'ask', 'show', 'best', 'job']
 
 @withRouter
+@autobind
 export default class extends PureComponent {
 
-    @autobind
     changeActiveTab(tab) {
         const { activeTab, history } = this.props
         if (activeTab === tab)
@@ -18,8 +17,22 @@ export default class extends PureComponent {
         history.push(`/${tab}`)
     }
 
+    navBack() {
+        const { history } = this.props
+        history.goBack()
+    }
+
     render() {
-        const { activeTab } = this.props
+        const { activeTab, back } = this.props
+        if (back)
+            return (
+                <Header>
+                    <NavTabs>
+                        <BackButton onClick={() => this.navBack()} />
+                        <NavTab>Back</NavTab>
+                    </NavTabs>
+                </Header >
+            )
 
         return (
             <Header>

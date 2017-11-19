@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import { toSvg } from 'feather-icons'
-const menuIcon = btoa(toSvg('menu', { color: '#66757f' }))
+const backIcon = btoa(toSvg('arrow-left', { color: '#1DA1F2' }))
 
 export const Header = styled.header`
     position: fixed;
@@ -9,7 +9,7 @@ export const Header = styled.header`
     z-index: 1;
 
     width: 100%;
-    height: 3rem;
+    height: calc(3rem + 1px);
 
     line-height: 2rem;
 
@@ -28,7 +28,7 @@ export const NavTabs = styled.nav`
     max-width: 960px;
     height: 100%;
 
-    overflow: hidden;
+    overflow: visible;
 `
 
 export const NavTab = styled.div`
@@ -40,9 +40,11 @@ export const NavTab = styled.div`
     width: 4rem;
     height: 100%;
 
+    font-size: 1rem;
     line-height: 3rem;
     text-align: center;
     font-weight: bold;
+    text-transform: uppercase;
 
     color: ${props => props.active ? '#1DA1F2' : '#66757f'};
     background-color: white;
@@ -61,4 +63,17 @@ export const NavTab = styled.div`
 
         background-color: ${props => props.active ? '#1DA1F2' : 'white'};
     }
+
+`
+
+export const BackButton = styled.p`
+    background-image: url("data:image/svg+xml;base64,${backIcon}");
+    background-size: 100% 100%;
+
+    float: left;
+
+    height: 2rem;
+    width: 2rem;
+    line-height: 2rem;
+    margin: .5rem;
 `

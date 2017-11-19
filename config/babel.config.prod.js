@@ -16,6 +16,11 @@ module.exports = {
         ]
     ],
     plugins: [
+        [
+            'babel-plugin-import', {
+                libraryName: 'antd', style: true
+            }
+        ],
         '@babel/plugin-proposal-pipeline-operator',
         '@babel/plugin-proposal-decorators',
         [

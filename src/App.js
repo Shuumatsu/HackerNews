@@ -2,17 +2,19 @@ import 'normalize.css'
 import './app.less'
 import 'react-virtualized/styles.css'
 import React, { PureComponent } from 'react'
-import { BrowserRouter, Route } from 'react-router-dom'
+import { BrowserRouter, Route, Switch } from 'react-router-dom'
 import PropTypes from 'prop-types'
-import Header from './components/Header'
-import Container from './components/Container'
-import LoadingIndicator from './components/LoadingIndicator'
+import Header from './Header'
+import List from './List'
+import Comments from './Comments'
+import ContentAreaWrapper from './ContentAreaWrapper'
+import LoadingIndicator from './LoadingIndicator'
 import { autobind } from 'core-decorators'
 
 @autobind
 export default class extends PureComponent {
 
-    state = { loading: false }
+    state = { loading: false, entities: {} }
 
     loadingManager = status => this.setState({ loading: status })
 
@@ -27,19 +29,32 @@ export default class extends PureComponent {
     render() {
         const loading = this.state.loading
 
-        return (
+        return [
             <BrowserRouter key='content'>
-                <Route path='/:activeTab' render={({ match, location }) => {
-                    const { activeTab } = match.params
-                    return [
-                        <Header key='header' activeTab={activeTab} />,
-                        <Container key={activeTab} activeTab={activeTab} />,
-                        <LoadingIndicator key='loading' loading={loading} />
-                    ]
-                }}>
-                </Route>
-            </BrowserRouter >
-        )
+                <Switch>
+                    <Route path='/item/:id' render={({ match, location }) => {
+                        const { id } = match.params
+                        return [
+                            <Header key='header' back={true} />,
+                            <ContentAreaWrapper key={`/item/${id}`}>
+                                <Comments id={id} />
+                            </ContentAreaWrapper>
+                        ]
+                    }} />
+                    <Route path='/:activeTab' render={({ match, location }) => {
+                        const { activeTab } = match.params
+                        return [
+                            <Header key='header' activeTab={activeTab} />,
+                            <ContentAreaWrapper key={activeTab}>
+                                <List key={activeTab} activeTab={activeTab} />
+                            </ContentAreaWrapper>
+                        ]
+                    }}>
+                    </Route>
+                </Switch>
+            </BrowserRouter >,
+            <LoadingIndicator key='loading' loading={loading} />
+        ]
     }
 }
 

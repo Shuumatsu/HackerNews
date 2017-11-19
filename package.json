@@ -5,6 +5,8 @@
     "build": "node scripts/build.js"
   },
   "dependencies": {
+    "antd": "^2.13.10",
+    "babel-plugin-import": "^1.6.2",
     "core-decorators": "^0.20.0",
     "core-js": "^2.5.1",
     "es6-promise": "^4.1.1",

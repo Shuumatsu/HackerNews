@@ -16,6 +16,11 @@ module.exports = {
         ]
     ],
     plugins: [
+        [
+            'babel-plugin-import', {
+                libraryName: 'antd', style: true
+            }
+        ],
         '@babel/plugin-transform-react-jsx-source',
         '@babel/plugin-proposal-decorators',
         '@babel/plugin-proposal-pipeline-operator'

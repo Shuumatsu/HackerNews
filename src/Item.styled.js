@@ -7,18 +7,25 @@ export const Item = styled.div`
     border-bottom: 1px solid #e6ecf0;
 `
 
-export const ItemTitle = styled.p`
+export const ItemLink = styled.a`
     background-color: #fff;
-    color: #14171a;
     position: relative;
     padding-left: 1rem;
-    display: inline-block;
+    display: block;
+    color: #66757f;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 `
 
-export const ItemLink = styled.div`
+export const Extra = styled.div`
+    text-transform: uppercase;
+    margin-left: 0.5rem;
 `
 
-export const ItemCommentsLink = styled.div`
+export const Metas = styled.div`
+    margin: 1rem 0;
 `
 
 export const ItemTime = styled.div`
