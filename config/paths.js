@@ -8,7 +8,7 @@ require('dotenv').config({ path: dotenv })
 const servedPath = process.env.PUBLIC_URL || '/'
 
 const paths = {
-    build: rootPathResolve('doc'),
+    build: rootPathResolve('docs'),
     public: rootPathResolve('public'),
     src: rootPathResolve('src'),
     entries: {
