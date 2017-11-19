@@ -3,6 +3,7 @@ const MinifyPlugin = require('babel-minify-webpack-plugin')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const SWPrecachePlugin = require('sw-precache-webpack-plugin')
 const postcssConfig = require('./postcss.config.prod')
 const babelConfig = require('./babel.config.prod')
 const paths = require('./paths')
@@ -107,6 +108,27 @@ module.exports = {
             algorithm: 'gzip',
             test: /\.js$|\.html|\.css$/,
             minRatio: 0.8
+        }),
+        new SWPrecachePlugin({
+            cacheId: 'hacker_news',
+            filename: 'service-worker.js',
+            minify: true,
+            dontCacheBustUrlsMatching: /./,
+            staticFileGlobsIgnorePatterns: [/\.map$/, /\.json$/],
+            runtimeCaching: [
+                {
+                    urlPattern: '/',
+                    handler: 'networkFirst'
+                },
+                {
+                    urlPattern: /\/(top|new|show|ask|jobs)/,
+                    handler: 'networkFirst'
+                },
+                {
+                    urlPattern: '/item/:id',
+                    handler: 'networkFirst'
+                },
+            ]
         })
     ]
 }

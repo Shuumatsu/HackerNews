@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react'
+import React from 'react'
 import styled, { keyframes } from 'styled-components'
 
 const bounce = keyframes`
@@ -30,6 +30,7 @@ const Wrapper = styled.div`
     width: 100%;
     height: 100px;
     text-align: center;
+    position
 `
 
 export default () => (

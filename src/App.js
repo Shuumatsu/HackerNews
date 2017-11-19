@@ -2,14 +2,18 @@ import 'normalize.css'
 import './app.less'
 import 'react-virtualized/styles.css'
 import React, { PureComponent } from 'react'
-import { BrowserRouter, Route, Switch } from 'react-router-dom'
+import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom'
 import PropTypes from 'prop-types'
-import Header from './Header'
-import List from './List'
-import Comments from './Comments'
-import ContentAreaWrapper from './ContentAreaWrapper'
-import LoadingIndicator from './LoadingIndicator'
+import Header from './components/Header'
+import ContentAreaWrapper from './components/ContentAreaWrapper'
+import LoadingIndicator from './components/LoadingIndicator'
 import { autobind } from 'core-decorators'
+// import Comments from './components/Comments'
+// import List from './components/List'
+import asyncComponent from './utils/asyncComponent'
+
+const Comments = asyncComponent(() => import('./components/Comments'))
+const List = asyncComponent(() => import('./components/List'))
 
 @autobind
 export default class extends PureComponent {
@@ -51,6 +55,7 @@ export default class extends PureComponent {
                         ]
                     }}>
                     </Route>
+                    <Redirect to='/new' />
                 </Switch>
             </BrowserRouter >,
             <LoadingIndicator key='loading' loading={loading} />

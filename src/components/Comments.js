@@ -1,14 +1,10 @@
 import React, { PureComponent } from 'react'
-import { fetchItem, fetchItems } from './firebase'
+import { fetchItem, fetchItems } from '../utils/firebase'
 import PropTypes from 'prop-types'
 import { Card, Tag } from 'antd'
 import { Metas, ItemLink, } from './Item.styled'
-import { twitterLong } from './utils/formatDate'
 import moment from 'moment'
-
-const postCache = new Map()
-const commentCache = new Map()
-
+import { itemCache as postCache, commentsCache } from '../utils/cache'
 export default class extends PureComponent {
 
     static contextTypes = {
@@ -28,16 +24,22 @@ export default class extends PureComponent {
         if (postCache.has(id)) {
             const post = postCache.get(id)
             this.setState({ post })
+            if (commentsCache.has(id)) {
+                const comments = commentsCache.get(id)
+                this.setState({ comments })
+            }
             return
         }
 
         try {
             this.loadingManager(true)
+
             const post = await fetchItem(id)
             postCache.set(id, post)
             this.mounted && this.setState({ post })
+
             const comments = await fetchItems(post.kids || [])
-            console.log(post, comments)
+            commentsCache.set(id, comments)
             this.mounted && this.setState({ comments })
         } catch (err) {
             alert(err)
@@ -64,7 +66,7 @@ export default class extends PureComponent {
                 <Metas>
                     <Tag color='cyan'>{score} points</Tag>
                     <Tag color='cyan'>{`@${by}`}</Tag>
-                    <Tag color='cyan'>{twitterLong(moment(time))}</Tag>
+                    <Tag color='cyan'>{moment(time * 1000).calendar()}</Tag>
                 </Metas>
             </Card>
         )
@@ -72,7 +74,7 @@ export default class extends PureComponent {
 
     renderComments() {
         if (!this.state.comments)
-            return this.state.post.kids.map((commentId, index) =>
+            return (this.state.post.kids || []).map((commentId, index) =>
                 <Card key={index} loading style={{ margin: '8px 16px' }} />
             )
 
@@ -80,9 +82,12 @@ export default class extends PureComponent {
             return (
                 <Card
                     style={{ margin: '8px 16px' }}
-                    title={`${comment.by} commented on ${twitterLong(moment(comment.time))}`}
                     key={index}>
                     <p dangerouslySetInnerHTML={{ __html: comment.text }} />
+                    <Metas>
+                        <Tag color='cyan'>{`@${comment.by}`}</Tag>
+                        <Tag color='cyan'>{moment(comment.time * 1000).calendar()}</Tag>
+                    </Metas>
                 </Card>
             )
         })

@@ -5,7 +5,15 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="shortcut icon" href="/favicon.ico">
-  <title>React App</title>
+  <title>Hacker News</title>
+  <script>
+    'use strict';
+    'serviceWorker' in navigator && navigator.serviceWorker.register('/service-worker.js').then(function (reg) {
+      return console.log('Registration succeeded. Scope is ' + reg.scope);
+    }).catch(function (err) {
+      return console.log('Registration failed with ' + err);
+    });
+  </script>
 </head>
 
 <body>

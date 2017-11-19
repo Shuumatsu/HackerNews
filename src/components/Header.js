@@ -19,7 +19,13 @@ export default class extends PureComponent {
 
     navBack() {
         const { history } = this.props
-        history.goBack()
+
+        if (history.length > 2) {
+            history.goBack()
+            return
+        }
+
+        history.push('/')
     }
 
     render() {

@@ -2,10 +2,9 @@ import React, { PureComponent } from 'react'
 import { List, InfiniteLoader, WindowScroller, AutoSizer } from 'react-virtualized'
 import { autobind } from 'core-decorators'
 import PropTypes from 'prop-types'
-import Item from './Item'
-import { fetchAllIdsByType, fetchItems } from './firebase'
-
-const allIdsCache = new Map()
+import Item from './ListItem'
+import { fetchAllIdsByType, fetchItem } from '../utils/firebase'
+import { itemCache, allIdsCache } from '../utils/cache'
 
 @autobind
 export default class extends PureComponent {
@@ -27,7 +26,17 @@ export default class extends PureComponent {
     async loadMoreRows({ startIndex, stopIndex }) {
         const allItemsIds = this.state.allItemsIds
         const idsInThisRange = allItemsIds.slice(startIndex, stopIndex)
-        const entities = await fetchItems(idsInThisRange)
+
+        this.loadingManager(true)
+        const entities = await Promise.all(idsInThisRange.map(async id => {
+            if (itemCache.has(id))
+                return itemCache.get(id)
+            const entity = await fetchItem(id)
+            itemCache.set(id, entity)
+            return entity
+        }))
+        this.loadingManager(false)
+
         this.mounted && this.setState(prev => ({
             itemEntities: [...prev.itemEntities, ...entities]
         }))
@@ -49,18 +58,21 @@ export default class extends PureComponent {
         )
     }
 
+
     async componentDidMount() {
+        this.loadingManager(true)
         this.mounted = true
         const { activeTab } = this.props
         if (allIdsCache.has(activeTab)) {
             const allItemsIds = allIdsCache.get(activeTab)
             this.setState({ allItemsIds })
+            this.loadingManager(false)
             return
         }
 
         try {
-            this.loadingManager(true)
             const allItemsIds = await fetchAllIdsByType(activeTab)
+            allIdsCache.set(activeTab, allItemsIds)
             this.mounted && this.setState({ allItemsIds })
         } catch (err) {
             alert(err)

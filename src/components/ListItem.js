@@ -1,7 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import moment from 'moment'
-import { twitterLong } from './utils/formatDate'
 import { Metas, ItemLink, Extra, } from './Item.styled'
 import { Card, Tag } from 'antd'
 
@@ -35,7 +34,7 @@ export default ({ item }) => {
             <Metas>
                 <Tag color='cyan'>{score} points</Tag>
                 <Tag color='cyan'>{`@${by}`}</Tag>
-                <Tag color='cyan'>{twitterLong(moment(time))}</Tag>
+                <Tag color='cyan'>{moment(time * 1000).calendar()}</Tag>
             </Metas>
         </Card>
     )
